@@ -1,12 +1,13 @@
-import { useState } from 'react';
-import { Button } from './components/ui/button';
+import { Suspense, useState } from 'react';
+import React from 'react';
+import HeaderBar from './modules/headerBar/headerBar';
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <div>
-      <Button variant="default"> asdasd</Button>
+      <Suspense>
+        <HeaderBar />
+      </Suspense>
     </div>
   );
 }

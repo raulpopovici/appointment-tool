@@ -1,12 +1,11 @@
 import { defineConfig } from '@rspack/cli';
-import { rspack } from '@rspack/core';
 const {
   ModuleFederationPlugin,
 } = require('@module-federation/enhanced/rspack');
 import * as RefreshPlugin from '@rspack/plugin-react-refresh';
-import path from 'path';
 
 const isDev = process.env.NODE_ENV === 'development';
+const rspack = require('@rspack/core');
 
 // Target browsers, see: https://github.com/browserslist/browserslist
 const targets = ['chrome >= 87', 'edge >= 88', 'firefox >= 78', 'safari >= 14'];
@@ -57,16 +56,19 @@ export default defineConfig({
       },
       {
         test: /\.css$/,
-        use: ['postcss-loader'],
-        type: 'css',
+        use: [
+          rspack.CssExtractRspackPlugin.loader,
+          'css-loader',
+          'postcss-loader',
+        ],
       },
     ],
   },
   plugins: [
     new ModuleFederationPlugin({
-      name: 'host', // Name of the host application
+      name: 'hostApp', // Name of the host app
       remotes: {
-        remoteApp: 'remoteApp@http://localhost:3001/remoteEntry.js', // Define the remote app
+        headerBarApp: 'headerBarApp@http://localhost:3001/headerBarRemote.js',
       },
       shared: {
         react: { singleton: true, eager: true },
@@ -76,6 +78,7 @@ export default defineConfig({
     new rspack.HtmlRspackPlugin({
       template: './index.html',
     }),
+    new rspack.CssExtractRspackPlugin({}),
     isDev ? new RefreshPlugin() : null,
   ].filter(Boolean),
   optimization: {
@@ -87,6 +90,6 @@ export default defineConfig({
     ],
   },
   experiments: {
-    css: true,
+    css: false,
   },
 });
