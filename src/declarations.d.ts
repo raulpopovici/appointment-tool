@@ -1,1 +1,1 @@
-declare module 'headerBarApp/Header';
+declare module 'headerBarApp/header';
