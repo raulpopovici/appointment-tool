@@ -1,6 +1,10 @@
 import { defineConfig } from '@rspack/cli';
 import { rspack } from '@rspack/core';
+const {
+  ModuleFederationPlugin,
+} = require('@module-federation/enhanced/rspack');
 import * as RefreshPlugin from '@rspack/plugin-react-refresh';
+import path from 'path';
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -14,6 +18,12 @@ export default defineConfig({
   },
   resolve: {
     extensions: ['...', '.ts', '.tsx', '.jsx'],
+  },
+  devServer: {
+    port: 3000,
+  },
+  output: {
+    publicPath: 'http://localhost:3000/', // Host application URL
   },
   module: {
     rules: [
@@ -53,6 +63,16 @@ export default defineConfig({
     ],
   },
   plugins: [
+    new ModuleFederationPlugin({
+      name: 'host', // Name of the host application
+      remotes: {
+        remoteApp: 'remoteApp@http://localhost:3001/remoteEntry.js', // Define the remote app
+      },
+      shared: {
+        react: { singleton: true, eager: true },
+        'react-dom': { singleton: true, eager: true },
+      },
+    }),
     new rspack.HtmlRspackPlugin({
       template: './index.html',
     }),
