@@ -1,13 +1,15 @@
 import { defineConfig } from '@rspack/cli';
-const {
-  ModuleFederationPlugin,
-} = require('@module-federation/enhanced/rspack');
-import * as RefreshPlugin from '@rspack/plugin-react-refresh';
+import { ModuleFederationPlugin } from '@module-federation/enhanced/rspack';
+import RefreshPlugin from '@rspack/plugin-react-refresh'; // Import it as default
+import rspack from '@rspack/core';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const isDev = process.env.NODE_ENV === 'development';
-const rspack = require('@rspack/core');
 
-// Target browsers, see: https://github.com/browserslist/browserslist
 const targets = ['chrome >= 87', 'edge >= 88', 'firefox >= 78', 'safari >= 14'];
 
 export default defineConfig({
@@ -79,7 +81,7 @@ export default defineConfig({
       template: './index.html',
     }),
     new rspack.CssExtractRspackPlugin({}),
-    isDev ? new RefreshPlugin() : null,
+    isDev ? new RefreshPlugin() : null, // Properly call RefreshPlugin as a function
   ].filter(Boolean),
   optimization: {
     minimizer: [
