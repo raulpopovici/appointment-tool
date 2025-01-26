@@ -12,7 +12,7 @@ export const AppointmentSlot = ({
   return (
     <div
       onClick={onSelect}
-      className={`hover:cursor-pointer rounded-lg shadow-sm w-32 pb-2 pt-2 pr-4 pl-4 flex flex-row items-center space-x-4 ${
+      className={`hover:cursor-pointer rounded-lg justify-center shadow-sm w-full w-full max-w-[250px] pb-3 pt-3 pr-4 pl-4 flex flex-row items-center space-x-4 ${
         isSelected
           ? 'bg-gradient-to-r from-[#1C7ED6] via-[#63A3D9] to-[#A9D6F7] text-white'
           : 'bg-white text-[#1C7ED6] border-[1px] border-[#1C7ED6]'

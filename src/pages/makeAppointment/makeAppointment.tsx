@@ -31,7 +31,16 @@ const initialState = {
   },
 };
 
-const slots = ['9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM'];
+const slots = [
+  '9:00 AM',
+  '10:00 AM',
+  '11:00 AM',
+  '12:00 PM',
+  '9:00 AM',
+  '10:00 AM',
+  '11:00 AM',
+  '12:00 PM',
+];
 
 function getDayTimeDescription(dayTime: string): string {
   switch (dayTime) {
@@ -101,8 +110,8 @@ export const MakeAppointment = () => {
     state.filters.dayTime;
 
   return (
-    <div className="bg-[#F4F8F9] h-screen w-full pr-72 pl-72 pt-24 flex flex-col space-y-12 text-[#144066">
-      <div className="bg-white rounded-lg shadow-sm pr-3 pl-3 py-4 flex flex-row space-x-8 items-center">
+    <div className="bg-[#F4F8F9] h-screen w-full p-24 flex items-center  flex-col space-y-8 text-[#144066]">
+      <div className="bg-white rounded-lg shadow-sm p-3 flex flex-row space-x-8 items-center w-full max-w-[1200px]">
         <Select
           value={state?.filters?.service}
           onValueChange={(value) => handleChangeFilters('service', value)}
@@ -163,72 +172,73 @@ export const MakeAppointment = () => {
             <SelectItem value="evening">Evening</SelectItem>
           </SelectContent>
         </Select>
-
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="#1C7ED6"
-          className="size-6 justify-self-end"
-        >
-          <path
-            fill-rule="evenodd"
-            d="m11.54 22.351.07.04.028.016a.76.76 0 0 0 .723 0l.028-.015.071-.041a16.975 16.975 0 0 0 1.144-.742 19.58 19.58 0 0 0 2.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 0 0-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 0 0 2.682 2.282 16.975 16.975 0 0 0 1.145.742ZM12 13.5a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
-            clip-rule="evenodd"
-          />
-        </svg>
-        <div>Location</div>
       </div>
       {filtersPopulated && (
-        <div className="flex flex-row space-x-8">
-          <Calendar className="bg-white rounded-lg shadow-sm max-w-[310px] max-h-[418px]" />
-          <div className="rounded-lg shadow-sm bg-white max-h-[418px] grow">
-            <div className="flex p-8 pb-4 items-center space-x-6 ">
-              <div>
-                {state?.filters?.dayTime === 'morning' ||
-                state?.filters?.dayTime === 'afternoon' ? (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill={
-                      state?.filters.dayTime === 'morning'
-                        ? '#F59E0B'
-                        : '#F97316'
-                    }
-                    className="size-8"
-                  >
-                    <path d="M12 2.25a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75ZM7.5 12a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM18.894 6.166a.75.75 0 0 0-1.06-1.06l-1.591 1.59a.75.75 0 1 0 1.06 1.061l1.591-1.59ZM21.75 12a.75.75 0 0 1-.75.75h-2.25a.75.75 0 0 1 0-1.5H21a.75.75 0 0 1 .75.75ZM17.834 18.894a.75.75 0 0 0 1.06-1.06l-1.59-1.591a.75.75 0 1 0-1.061 1.06l1.59 1.591ZM12 18a.75.75 0 0 1 .75.75V21a.75.75 0 0 1-1.5 0v-2.25A.75.75 0 0 1 12 18ZM7.758 17.303a.75.75 0 0 0-1.061-1.06l-1.591 1.59a.75.75 0 0 0 1.06 1.061l1.591-1.59ZM6 12a.75.75 0 0 1-.75.75H3a.75.75 0 0 1 0-1.5h2.25A.75.75 0 0 1 6 12ZM6.697 7.757a.75.75 0 0 0 1.06-1.06l-1.59-1.591a.75.75 0 0 0-1.061 1.06l1.59 1.591Z" />
-                  </svg>
-                ) : (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="#3B82F6"
-                    className="size-8"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M9.528 1.718a.75.75 0 0 1 .162.819A8.97 8.97 0 0 0 9 6a9 9 0 0 0 9 9 8.97 8.97 0 0 0 3.463-.69.75.75 0 0 1 .981.98 10.503 10.503 0 0 1-9.694 6.46c-5.799 0-10.5-4.7-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 0 1 .818.162Z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>
-                )}
-              </div>
-              <div>
-                <div className="font-semibold text-[#144066]">
-                  {getDayTimeDescription(state?.filters?.dayTime ?? 'morning')}
-                </div>
-                <div className="text-sm text-[#4E666A]">
-                  {getDayTimeHours(state?.filters?.dayTime ?? 'morning')}
-                </div>
+        <div className="flex bg-white h-[600px] rounded-md shadow-sm flex-row w-full max-w-[1200px]">
+          <div className="flex flex-col w-[25%] p-6 space-y-6">
+            <span className="text-xl font-semibold">Oil Change</span>
+            <div className="flex flex-row space-x-2 items-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                />
+              </svg>
+              <span className="text-sm ">30 minutes</span>
+            </div>
+            <div className="flex flex-col">
+              <div className=" flex flex-row items-center space-x-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="#1C7ED6"
+                  className="size-5"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="m11.54 22.351.07.04.028.016a.76.76 0 0 0 .723 0l.028-.015.071-.041a16.975 16.975 0 0 0 1.144-.742 19.58 19.58 0 0 0 2.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 0 0-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 0 0 2.682 2.282 16.975 16.975 0 0 0 1.145.742ZM12 13.5a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                <span className="text-sm ">
+                  Intrarea Virgil Simionescu nr 8A sc A ap 7
+                </span>
               </div>
             </div>
-            <div className="w-[calc(100% - 2rem)]  bg-[#e0e0e0] h-[0.5px] justify-self-center" />
-
-            <div className="p-8 pt-4 flex flex-col gap-4 over">
+            <div className="space-x-1">
+              <span className="inline text-sm font-semibold">Heads-up:</span>
+              <span className="inline text-sm">
+                Be sure to arrive at least 10 minutes early to get settled
+                before your appointment.
+              </span>
+            </div>
+            <span className="text-sm">
+              If you need to reschedule or cancel, please let us know at least
+              24 hours in advance to avoid any fees.
+            </span>
+            <span className="text-sm">See you there!</span>
+          </div>
+          <div className="w-[50%] border-l border-r p-6 flex flex-col space-y-6">
+            <span className="text-sm font-semibold">Select Day & Time</span>
+            <div className="flex">
+              <Calendar className="bg-white w-full" />
+            </div>
+          </div>
+          <div className="w-[25%] p-6 flex flex-col space-y-6">
+            <span className="text-sm font-semibold">Thusday, 27th</span>
+            <div className="flex flex-col gap-4 overflow-y-auto overflow-x-hidden">
               {slots?.length > 0 ? (
                 slots.map((slot) => (
                   <AppointmentSlot
-                    key={slot} // Add a key to avoid React warnings
+                    key={slot} // Add a  key to avoid React warnings
                     hour={slot}
                     isSelected={state.selectedSlot === slot}
                     onSelect={() => handleSelect(slot)}
