@@ -27,7 +27,7 @@ export default defineConfig({
   output: {
     path: resolve(__dirname, 'public'), // Ensure output goes to the "public" directory
     filename: '[name].js', // Use entry name for output file names
-    publicPath: '/', // Ensure proper public path for static files
+    publicPath: 'auto', // Ensure proper public path for static files
   },
   module: {
     rules: [
@@ -76,6 +76,7 @@ export default defineConfig({
         headerBarApp:
           'headerBarApp@https://appointment-tool-header-mhwec5146-popovici-rauls-projects.vercel.app/headerBarRemote.js',
       },
+
       shared: {
         react: { singleton: true, eager: true },
         'react-dom': { singleton: true, eager: true },
