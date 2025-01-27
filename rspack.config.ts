@@ -3,7 +3,7 @@ import { ModuleFederationPlugin } from '@module-federation/enhanced/rspack';
 import RefreshPlugin from '@rspack/plugin-react-refresh'; // Import it as default
 import rspack from '@rspack/core';
 import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+import { dirname, resolve } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -25,7 +25,9 @@ export default defineConfig({
     historyApiFallback: true,
   },
   output: {
-    publicPath: 'http://localhost:3000/', // Host application URL
+    path: resolve(__dirname, 'public'), // Ensure output goes to the "public" directory
+    filename: '[name].js', // Use entry name for output file names
+    publicPath: '/', // Ensure proper public path for static files
   },
   module: {
     rules: [
