@@ -73,7 +73,8 @@ export default defineConfig({
     new ModuleFederationPlugin({
       name: 'hostApp', // Name of the host app
       remotes: {
-        headerBarApp: 'headerBarApp@http://localhost:3001/headerBarRemote.js',
+        headerBarApp:
+          'headerBarApp@https://appointment-tool-header-mhwec5146-popovici-rauls-projects.vercel.app/headerBarRemote.js',
       },
       shared: {
         react: { singleton: true, eager: true },
