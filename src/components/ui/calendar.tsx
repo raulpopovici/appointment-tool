@@ -52,9 +52,7 @@ function Calendar({
         ),
         day_range_start: 'day-range-start',
         day_range_end: 'day-range-end',
-        day_selected:
-          'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground',
-        day_today: 'bg-[#FF8C42] text-white',
+        day_selected: 'bg-[#FF8C42] text-white',
         day_outside:
           'day-outside text-[#94A3A5] hover:bg-white hover:text-[#94A3A5] pointer-events-none',
 

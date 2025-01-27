@@ -20,15 +20,18 @@ type MakeAppointmentFilters = {
 type MakeAppointmentState = {
   filters: MakeAppointmentFilters;
   selectedSlot: string;
+  selectedDate: Date;
 };
 
-const initialState = {
+const initialState: MakeAppointmentState = {
   filters: {
     service: '',
     serviceDetails: '',
     provider: '',
     dayTime: '',
   },
+  selectedSlot: '',
+  selectedDate: new Date(),
 };
 
 const slots = [
@@ -36,10 +39,13 @@ const slots = [
   '10:00 AM',
   '11:00 AM',
   '12:00 PM',
-  '9:00 AM',
-  '10:00 AM',
-  '11:00 AM',
-  '12:00 PM',
+  '19:00 AM',
+  '93:00 AM',
+  '211:00 AM',
+  '122:00 PM',
+  '122:00 PM',
+  '122:00 PM',
+  '122:00 PM',
 ];
 
 function getDayTimeDescription(dayTime: string): string {
@@ -103,11 +109,42 @@ export const MakeAppointment = () => {
     }));
   };
 
+  const handleDateChange = (date: Date | undefined) => {
+    console.log('Date selected:', date);
+    if (date) {
+      setState((prevState) => ({
+        ...prevState,
+        selectedDate: date,
+      }));
+      console.log('Date selected:', date);
+    }
+  };
+
+  const getOrdinalSuffix = (day: number): string => {
+    if (day > 3 && day < 21) return 'th'; // Handles 11th - 19th
+    switch (day % 10) {
+      case 1:
+        return 'st';
+      case 2:
+        return 'nd';
+      case 3:
+        return 'rd';
+      default:
+        return 'th';
+    }
+  };
+
   const filtersPopulated =
     state.filters.service &&
     state.filters.serviceDetails &&
     state.filters.provider &&
     state.filters.dayTime;
+
+  const weekday = state?.selectedDate?.toLocaleDateString('en-US', {
+    weekday: 'long',
+  });
+  const day = state?.selectedDate?.getDate();
+  const formattedDate = `${weekday}, ${day}${getOrdinalSuffix(day)}`;
 
   return (
     <div className="bg-[#F4F8F9] h-screen w-full p-24 flex items-center  flex-col space-y-8 text-[#144066]">
@@ -229,11 +266,17 @@ export const MakeAppointment = () => {
           <div className="w-[50%] border-l border-r p-6 flex flex-col space-y-6">
             <span className="text-sm font-semibold">Select Day & Time</span>
             <div className="flex">
-              <Calendar className="bg-white w-full" />
+              <Calendar
+                className="bg-white w-full"
+                selected={state.selectedDate}
+                onDayClick={(date: Date | undefined) => {
+                  handleDateChange(date); // Triggers when a date is selected
+                }}
+              />
             </div>
           </div>
           <div className="w-[25%] p-6 flex flex-col space-y-6">
-            <span className="text-sm font-semibold">Thusday, 27th</span>
+            <span className="text-sm font-semibold">{formattedDate}</span>
             <div className="flex flex-col gap-4 overflow-y-auto overflow-x-hidden">
               {slots?.length > 0 ? (
                 slots.map((slot) => (
