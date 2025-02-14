@@ -3,7 +3,7 @@ import { ModuleFederationPlugin } from '@module-federation/enhanced/rspack';
 import RefreshPlugin from '@rspack/plugin-react-refresh'; // Import it as default
 import rspack from '@rspack/core';
 import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+import { dirname, resolve } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -25,7 +25,9 @@ export default defineConfig({
     historyApiFallback: true,
   },
   output: {
-    publicPath: 'http://localhost:3000/', // Host application URL
+    path: resolve(__dirname, 'public'), // Ensure output goes to the "public" directory
+    filename: '[name].js', // Use entry name for output file names
+    publicPath: 'auto', // Ensure proper public path for static files
   },
   module: {
     rules: [
@@ -71,8 +73,10 @@ export default defineConfig({
     new ModuleFederationPlugin({
       name: 'hostApp', // Name of the host app
       remotes: {
-        headerBarApp: 'headerBarApp@http://localhost:3001/headerBarRemote.js',
+        headerBarApp:
+          'headerBarApp@https://appointment-tool-header-mhwec5146-popovici-rauls-projects.vercel.app/headerBarRemote.js',
       },
+
       shared: {
         react: { singleton: true, eager: true },
         'react-dom': { singleton: true, eager: true },
