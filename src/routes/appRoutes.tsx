@@ -5,6 +5,7 @@ import { Home } from '../pages/home/home';
 import { BecomeProvider } from '../pages/becomeProvider/becomeProvider';
 import { MakeAppointment } from '../pages/makeAppointment/makeAppointment';
 import { Services } from '../pages/services/services';
+import LoginRegister from '../pages/login/loginRegister';
 
 // Define routes as an array of RouteObject
 const routes: RouteObject[] = [
@@ -18,6 +19,10 @@ const routes: RouteObject[] = [
       { path: 'become-a-provider', element: <BecomeProvider /> },
       { path: '*', element: <div>page not found</div> }, // Catch-all for 404, //TODO
     ],
+  },
+  {
+    path: '/login',
+    element: <LoginRegister />,
   },
 ];
 

@@ -21,6 +21,8 @@ const buttonVariants = cva(
         link: 'text-primary underline-offset-4 hover:underline',
         callToAction:
           'bg-[#1C7ED6] text-white font-bold shadow-lg hover:bg-[#1C7ED6]/90 focus-visible:ring-[#1864AB] px-6 py-3 rounded-lg transition-transform transform hover:scale-105',
+        loginButtons:
+          'bg-[#1C7ED6] text-primary-foreground shadow hover:bg-[#1C7ED6]/90',
       },
       size: {
         default: 'h-9 px-4 py-2',
