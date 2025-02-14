@@ -9,6 +9,8 @@ import {
   SelectValue,
 } from '../../components/ui/select';
 import { AppointmentSlot } from '../../components/appointmentSlot';
+import { Input } from '../../components/ui/input';
+import { Checkbox } from '../../components/ui/checkbox';
 
 type MakeAppointmentFilters = {
   service: string;
@@ -21,6 +23,7 @@ type MakeAppointmentState = {
   filters: MakeAppointmentFilters;
   selectedSlot: string;
   selectedDate: Date;
+  isSecondStep: boolean;
 };
 
 const initialState: MakeAppointmentState = {
@@ -32,6 +35,7 @@ const initialState: MakeAppointmentState = {
   },
   selectedSlot: '',
   selectedDate: new Date(),
+  isSecondStep: false,
 };
 
 const slots = [
@@ -146,8 +150,27 @@ export const MakeAppointment = () => {
   const day = state?.selectedDate?.getDate();
   const formattedDate = `${weekday}, ${day}${getOrdinalSuffix(day)}`;
 
+  const handleButtonClick = () => {
+    setState((prevState) => ({
+      ...prevState,
+      isSecondStep: !prevState.isSecondStep,
+    }));
+  };
+
+  const formattedDateForSecondStep = state.selectedDate.toLocaleDateString(
+    'en-US',
+    {
+      weekday: 'long', // "Friday"
+      month: 'long', // "February"
+      day: 'numeric', // "14"
+      year: 'numeric', // "2025"
+    },
+  );
+
+  const formattedDateTime = `${formattedDateForSecondStep} at ${state.selectedSlot}`;
+
   return (
-    <div className="bg-[#F4F8F9] h-screen w-full p-24 flex items-center  flex-col space-y-8 text-[#144066]">
+    <div className="bg-[#F4F8F9] grow h-full min-h-screen w-full p-24 flex items-center  flex-col space-y-8 text-[#144066]">
       <div className="bg-white rounded-lg shadow-sm p-3 flex flex-row space-x-8 items-center w-full max-w-[1200px]">
         <Select
           value={state?.filters?.service}
@@ -258,50 +281,153 @@ export const MakeAppointment = () => {
               </span>
             </div>
             <span className="text-sm">
-              If you need to reschedule or cancel, please let us know at least
-              24 hours in advance to avoid any fees.
+              If you need to reschedule or cancel, please let us know as soon as
+              possible.
             </span>
             <span className="text-sm">See you there!</span>
           </div>
-          <div className="w-[50%] border-l border-r p-6 flex flex-col space-y-6">
-            <span className="text-sm font-semibold">Select Day & Time</span>
-            <div className="flex">
-              <Calendar
-                className="bg-white w-full"
-                selected={state.selectedDate}
-                onDayClick={(date: Date | undefined) => {
-                  handleDateChange(date); // Triggers when a date is selected
-                }}
-              />
-            </div>
-          </div>
-          <div className="w-[25%] p-6 flex flex-col space-y-6">
-            <span className="text-sm font-semibold">{formattedDate}</span>
-            <div className="flex flex-col gap-4 overflow-y-auto overflow-x-hidden">
-              {slots?.length > 0 ? (
-                slots.map((slot) => (
-                  <AppointmentSlot
-                    key={slot} // Add a  key to avoid React warnings
-                    hour={slot}
-                    isSelected={state.selectedSlot === slot}
-                    onSelect={() => handleSelect(slot)}
+          {!state.isSecondStep ? (
+            <>
+              <div className="w-[50%] border-l border-r p-6 flex flex-col space-y-6">
+                <span className="text-sm font-semibold">Select Day & Time</span>
+                <div className="flex">
+                  <Calendar
+                    className="bg-white w-full"
+                    selected={state.selectedDate}
+                    onDayClick={(date: Date | undefined) => {
+                      handleDateChange(date); // Triggers when a date is selected
+                    }}
                   />
-                ))
-              ) : (
-                <p className="text-sm text-center text-[#4E666A]">
-                  No available slots. Please adjust the filters.
-                </p>
-              )}
+                </div>
+              </div>
+              <div className="w-[25%] p-6 flex flex-col space-y-6">
+                <span className="text-sm font-semibold">{formattedDate}</span>
+                <div className="flex flex-col gap-4 overflow-y-auto overflow-x-hidden">
+                  {slots?.length > 0 ? (
+                    slots.map((slot) => (
+                      <AppointmentSlot
+                        key={slot} // Add a  key to avoid React warnings
+                        hour={slot}
+                        isSelected={state.selectedSlot === slot}
+                        onSelect={() => handleSelect(slot)}
+                      />
+                    ))
+                  ) : (
+                    <p className="text-sm text-center text-[#4E666A]">
+                      No available slots. Please adjust the filters.
+                    </p>
+                  )}
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="border-l flex flex-col space-y-6 p-6 h-full grow">
+              <div className="flex flex-row">
+                <span className="text-sm font-semibold flex grow">
+                  Date & Time
+                </span>
+                <div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    className="size-6 cursor-pointer"
+                    onClick={() => handleButtonClick()}
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3"
+                    />
+                  </svg>
+                </div>
+              </div>
+
+              <div className="flex row space-x-2 items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  className="size-5"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M6.75 2.994v2.25m10.5-2.25v2.25m-14.252 13.5V7.491a2.25 2.25 0 0 1 2.25-2.25h13.5a2.25 2.25 0 0 1 2.25 2.25v11.251m-18 0a2.25 2.25 0 0 0 2.25 2.25h13.5a2.25 2.25 0 0 0 2.25-2.25m-18 0v-7.5a2.25 2.25 0 0 1 2.25-2.25h13.5a2.25 2.25 0 0 1 2.25 2.25v7.5m-6.75-6h2.25m-9 2.25h4.5m.002-2.25h.005v.006H12v-.006Zm-.001 4.5h.006v.006h-.006v-.005Zm-2.25.001h.005v.006H9.75v-.006Zm-2.25 0h.005v.005h-.006v-.005Zm6.75-2.247h.005v.005h-.005v-.005Zm0 2.247h.006v.006h-.006v-.006Zm2.25-2.248h.006V15H16.5v-.005Z"
+                  />
+                </svg>
+                <span className="text-sm">{formattedDateTime}</span>
+              </div>
+
+              <div className="flex flex-col">
+                <div className="flex flex-row space-x-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    className="size-5"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75a2.25 2.25 0 0 0-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3"
+                    />
+                  </svg>
+
+                  <span className="text-sm">Phone number</span>
+                </div>
+
+                <span className="text-[12px] ml-[27px] text-[#8B99AE]">
+                  Enter the phone number for receiving checkup-related details
+                </span>
+                <Input className="ml-[26px] max-w-[250px]"></Input>
+
+                <div className="flex flex-row mt-[20px] space-x-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    className="size-5"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M2.25 13.5h3.86a2.25 2.25 0 0 1 2.012 1.244l.256.512a2.25 2.25 0 0 0 2.013 1.244h3.218a2.25 2.25 0 0 0 2.013-1.244l.256-.512a2.25 2.25 0 0 1 2.013-1.244h3.859m-19.5.338V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18v-4.162c0-.224-.034-.447-.1-.661L19.24 5.338a2.25 2.25 0 0 0-2.15-1.588H6.911a2.25 2.25 0 0 0-2.15 1.588L2.35 13.177a2.25 2.25 0 0 0-.1.661Z"
+                    />
+                  </svg>
+
+                  <span className="text-sm">Email</span>
+                </div>
+
+                <span className="text-[12px] text-[#8B99AE] ml-[27px]">
+                  Enter the email address for receiving checkup-related details
+                </span>
+                <Input className=" max-w-[250px] ml-[26px]" />
+
+                <div className="items-top flex space-x-2 mt-[20px] text-sm text-[#8B99AE]">
+                  * By providing your contact details, you agree to receive
+                  communications from us via email and phone.
+                </div>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       )}
       {filtersPopulated && (
         <Button
           variant="callToAction"
           className="w-72 h-12 rounded-2xl self-center mt-72"
+          onClick={() => handleButtonClick()}
         >
-          Next step
+          {state.isSecondStep ? 'Book appointment' : 'Next step'}
         </Button>
       )}
 
