@@ -4,6 +4,7 @@ import HeaderBar from './modules/headerBar/headerBar';
 import { Outlet } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { Footer } from './components/ui/footer';
+import { UserProvider } from './context/userContext';
 
 function App() {
   const navigate = useNavigate();
@@ -11,15 +12,17 @@ function App() {
     navigate(route);
   };
   return (
-    <div className="flex flex-col min-h-screen">
-      <Suspense>
-        <HeaderBar onButtonClick={handleNavButtonClick} />
-      </Suspense>
-      <main>
-        <Outlet />
-      </main>
-      <Footer />
-    </div>
+    <UserProvider>
+      <div className="flex flex-col min-h-screen">
+        <Suspense>
+          <HeaderBar onButtonClick={handleNavButtonClick} />
+        </Suspense>
+        <main>
+          <Outlet />
+        </main>
+        <Footer />
+      </div>
+    </UserProvider>
   );
 }
 

@@ -11,28 +11,17 @@ import {
 import { AppointmentSlot } from '../../components/appointmentSlot';
 import { Input } from '../../components/ui/input';
 import { Checkbox } from '../../components/ui/checkbox';
-
-type MakeAppointmentFilters = {
-  service: string;
-  serviceDetails: string;
-  provider: string;
-  dayTime: string;
-};
+import { mockData } from '../../mocks/mocks'; // New structured data
+import { useUser } from '../../hooks/useUser';
+import { Category, Provider, Service } from '../../context/userContext';
 
 type MakeAppointmentState = {
-  filters: MakeAppointmentFilters;
   selectedSlot: string;
   selectedDate: Date;
   isSecondStep: boolean;
 };
 
 const initialState: MakeAppointmentState = {
-  filters: {
-    service: '',
-    serviceDetails: '',
-    provider: '',
-    dayTime: '',
-  },
   selectedSlot: '',
   selectedDate: new Date(),
   isSecondStep: false,
@@ -43,67 +32,46 @@ const slots = [
   '10:00 AM',
   '11:00 AM',
   '12:00 PM',
-  '19:00 AM',
-  '93:00 AM',
-  '211:00 AM',
-  '122:00 PM',
-  '122:00 PM',
-  '122:00 PM',
-  '122:00 PM',
+  '1:00 PM',
+  '2:00 PM',
+  '3:00 PM',
+  '4:00 PM',
+  '5:00 PM',
 ];
 
-function getDayTimeDescription(dayTime: string): string {
-  switch (dayTime) {
-    case 'morning':
-      return 'Morning';
-    case 'evening':
-      return 'Evening';
-    case 'afternoon':
-      return 'Afternoon';
-    default:
-      return 'Evening';
-  }
-}
-
-function getDayTimeHours(dayTime: string): string {
-  switch (dayTime) {
-    case 'morning':
-      return '9:00 AM to  12:00 PM';
-    case 'evening':
-      return '5:00 PM to 12:00 AM';
-    case 'afternoon':
-      return '12:00 PM to 5:00 PM';
-    default:
-      return '5:00 PM to 12:00 AM';
-  }
-}
-
 export const MakeAppointment = () => {
-  const [state, setState] = useState(initialState as MakeAppointmentState);
-  const handleChangeFilters = (
-    key: keyof MakeAppointmentFilters,
-    value: string,
-  ) => {
-    setState((prevState) => {
-      const newFilters = { ...prevState.filters, [key]: value };
+  const [state, setState] = useState(initialState);
+  const {
+    selectedCategory,
+    setSelectedCategory,
+    selectedService,
+    setSelectedService,
+    selectedProvider,
+    setSelectedProvider,
+  } = useUser();
 
-      // Reset and disable dependent filters based on the current key
-      if (key === 'service') {
-        newFilters.serviceDetails = ''; // Reset serviceDetails when service changes
-        newFilters.provider = ''; // Reset provider when service changes
-        newFilters.dayTime = ''; // Reset dayTime when service changes
-      } else if (key === 'serviceDetails') {
-        newFilters.provider = ''; // Reset provider when serviceDetails changes
-        newFilters.dayTime = ''; // Reset dayTime when serviceDetails changes
-      } else if (key === 'provider') {
-        newFilters.dayTime = ''; // Reset dayTime when provider changes
-      }
+  const handleCategoryChange = (categoryId: string) => {
+    const category =
+      mockData.categories.find((c) => c.id === categoryId) || null;
+    setSelectedCategory(category);
+    setSelectedService(null); // Reset service
+    setSelectedProvider(null); // Reset provider
+  };
 
-      return {
-        ...prevState,
-        filters: newFilters,
-      };
-    });
+  const handleServiceChange = (serviceId: string) => {
+    const service =
+      mockData.providers
+        .flatMap((provider) => provider.services)
+        .find((s) => s.id === serviceId) || null;
+
+    setSelectedService(service);
+    setSelectedProvider(null); // Reset provider when service changes
+  };
+
+  const handleProviderChange = (providerId: string) => {
+    const provider =
+      mockData.providers.find((p) => p.id === providerId) || null;
+    setSelectedProvider(provider);
   };
 
   const handleSelect = (slot: string) => {
@@ -114,18 +82,16 @@ export const MakeAppointment = () => {
   };
 
   const handleDateChange = (date: Date | undefined) => {
-    console.log('Date selected:', date);
     if (date) {
       setState((prevState) => ({
         ...prevState,
         selectedDate: date,
       }));
-      console.log('Date selected:', date);
     }
   };
 
   const getOrdinalSuffix = (day: number): string => {
-    if (day > 3 && day < 21) return 'th'; // Handles 11th - 19th
+    if (day > 3 && day < 21) return 'th';
     switch (day % 10) {
       case 1:
         return 'st';
@@ -138,18 +104,6 @@ export const MakeAppointment = () => {
     }
   };
 
-  const filtersPopulated =
-    state.filters.service &&
-    state.filters.serviceDetails &&
-    state.filters.provider &&
-    state.filters.dayTime;
-
-  const weekday = state?.selectedDate?.toLocaleDateString('en-US', {
-    weekday: 'long',
-  });
-  const day = state?.selectedDate?.getDate();
-  const formattedDate = `${weekday}, ${day}${getOrdinalSuffix(day)}`;
-
   const handleButtonClick = () => {
     setState((prevState) => ({
       ...prevState,
@@ -157,102 +111,105 @@ export const MakeAppointment = () => {
     }));
   };
 
-  const formattedDateForSecondStep = state.selectedDate.toLocaleDateString(
-    'en-US',
-    {
-      weekday: 'long', // "Friday"
-      month: 'long', // "February"
-      day: 'numeric', // "14"
-      year: 'numeric', // "2025"
-    },
+  const formattedDateTime = `${state.selectedDate.toLocaleDateString('en-US', {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  })} at ${state.selectedSlot}`;
+
+  const { categories, providers } = mockData;
+
+  const availableServices = selectedCategory
+    ? mockData.providers.flatMap((provider) =>
+        provider.services.filter((s) => s.categoryId === selectedCategory.id),
+      )
+    : [];
+
+  const availableProviders = mockData.providers.filter((provider) =>
+    provider.services.some(
+      (s) =>
+        s.id === selectedService?.id && s.categoryId === selectedCategory?.id,
+    ),
   );
 
-  const formattedDateTime = `${formattedDateForSecondStep} at ${state.selectedSlot}`;
-
   return (
-    <div className="bg-[#F4F8F9] grow h-full min-h-screen w-full p-24 flex items-center  flex-col space-y-8 text-[#144066]">
-      <div className="bg-white rounded-lg shadow-sm p-3 flex flex-row space-x-8 items-center w-full max-w-[1200px]">
+    <div className="bg-[#F4F8F9] grow h-full min-h-screen w-full p-24 flex items-center flex-col space-y-8 text-[#144066]">
+      <div className="bg-white rounded-md shadow-sm p-3 flex flex-row space-x-8 items-center justify-center w-full max-w-[800px]">
         <Select
-          value={state?.filters?.service}
-          onValueChange={(value) => handleChangeFilters('service', value)}
+          value={selectedCategory?.id ?? ''}
+          onValueChange={handleCategoryChange}
         >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Select category" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="dentists">Dentists</SelectItem>
-            <SelectItem value="mechanic">Mechanic</SelectItem>
-            <SelectItem value="hairstylist">Hairstylist</SelectItem>
+            {categories.map((category) => (
+              <SelectItem key={category.id} value={category.id}>
+                {category.name}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
 
         <Select
-          value={state?.filters?.serviceDetails}
-          onValueChange={(value) =>
-            handleChangeFilters('serviceDetails', value)
-          }
-          disabled={!state.filters.service} // Disable if service is not selected
+          value={selectedService?.id ?? ''}
+          disabled={!selectedCategory}
+          onValueChange={handleServiceChange}
         >
           <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Select type" />
+            <SelectValue placeholder="Select service" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="light">Service Details 1</SelectItem>
-            <SelectItem value="dark">Service Details 2</SelectItem>
-            <SelectItem value="system">Service Details 3</SelectItem>
+            {availableServices.map((service) => (
+              <SelectItem key={service.id} value={service.id}>
+                {service.name}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
 
         <Select
-          value={state?.filters?.provider}
-          onValueChange={(value) => handleChangeFilters('provider', value)}
-          disabled={!state.filters.serviceDetails} // Disable if serviceDetails is not selected
+          value={selectedProvider?.id ?? ''}
+          onValueChange={handleProviderChange}
+          disabled={!selectedService}
         >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Select provider" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="provider1">Provider 1</SelectItem>
-            <SelectItem value="provider2">Provider 2</SelectItem>
-            <SelectItem value="provider3">Provider 3</SelectItem>
-          </SelectContent>
-        </Select>
-
-        <Select
-          value={state?.filters?.dayTime}
-          onValueChange={(value) => handleChangeFilters('dayTime', value)}
-          disabled={!state.filters.provider} // Disable if provider is not selected
-        >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Select time of day" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="morning">Morning</SelectItem>
-            <SelectItem value="afternoon">Afternoon</SelectItem>
-            <SelectItem value="evening">Evening</SelectItem>
+            {availableProviders.map((provider) => (
+              <SelectItem key={provider.id} value={provider.id}>
+                {provider.name}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>
-      {filtersPopulated && (
+
+      {selectedProvider && (
         <div className="flex bg-white h-[600px] rounded-md shadow-sm flex-row w-full max-w-[1200px]">
           <div className="flex flex-col w-[25%] p-6 space-y-6">
-            <span className="text-xl font-semibold">Oil Change</span>
+            <span className="text-xl font-semibold">
+              {selectedService?.name ?? ''}
+            </span>
             <div className="flex flex-row space-x-2 items-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                fill="none"
                 viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
+                fill="#1C7ED6"
                 className="size-5"
               >
                 <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                  fill-rule="evenodd"
+                  d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 6a.75.75 0 0 0-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 0 0 0-1.5h-3.75V6Z"
+                  clip-rule="evenodd"
                 />
               </svg>
-              <span className="text-sm ">30 minutes</span>
+
+              <span className="text-sm ">
+                {selectedService?.duration ?? ''}
+              </span>
             </div>
             <div className="flex flex-col">
               <div className=" flex flex-row items-center space-x-2">
@@ -269,8 +226,28 @@ export const MakeAppointment = () => {
                   />
                 </svg>
                 <span className="text-sm ">
-                  Intrarea Virgil Simionescu nr 8A sc A ap 7
+                  {selectedProvider?.location ?? ''}
                 </span>
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <div className=" flex flex-row items-center space-x-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="#1C7ED6"
+                  className="size-5"
+                >
+                  <path d="M12 7.5a2.25 2.25 0 1 0 0 4.5 2.25 2.25 0 0 0 0-4.5Z" />
+                  <path
+                    fill-rule="evenodd"
+                    d="M1.5 4.875C1.5 3.839 2.34 3 3.375 3h17.25c1.035 0 1.875.84 1.875 1.875v9.75c0 1.036-.84 1.875-1.875 1.875H3.375A1.875 1.875 0 0 1 1.5 14.625v-9.75ZM8.25 9.75a3.75 3.75 0 1 1 7.5 0 3.75 3.75 0 0 1-7.5 0ZM18.75 9a.75.75 0 0 0-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 0 0 .75-.75V9.75a.75.75 0 0 0-.75-.75h-.008ZM4.5 9.75A.75.75 0 0 1 5.25 9h.008a.75.75 0 0 1 .75.75v.008a.75.75 0 0 1-.75.75H5.25a.75.75 0 0 1-.75-.75V9.75Z"
+                    clip-rule="evenodd"
+                  />
+                  <path d="M2.25 18a.75.75 0 0 0 0 1.5c5.4 0 10.63.722 15.6 2.075 1.19.324 2.4-.558 2.4-1.82V18.75a.75.75 0 0 0-.75-.75H2.25Z" />
+                </svg>
+
+                <span className="text-sm ">{selectedService?.price ?? ''}</span>
               </div>
             </div>
             <div className="space-x-1">
@@ -286,37 +263,26 @@ export const MakeAppointment = () => {
             </span>
             <span className="text-sm">See you there!</span>
           </div>
+
           {!state.isSecondStep ? (
             <>
               <div className="w-[50%] border-l border-r p-6 flex flex-col space-y-6">
                 <span className="text-sm font-semibold">Select Day & Time</span>
-                <div className="flex">
-                  <Calendar
-                    className="bg-white w-full"
-                    selected={state.selectedDate}
-                    onDayClick={(date: Date | undefined) => {
-                      handleDateChange(date); // Triggers when a date is selected
-                    }}
-                  />
-                </div>
+                <Calendar
+                  selected={state.selectedDate}
+                  onDayClick={handleDateChange}
+                />
               </div>
               <div className="w-[25%] p-6 flex flex-col space-y-6">
-                <span className="text-sm font-semibold">{formattedDate}</span>
                 <div className="flex flex-col gap-4 overflow-y-auto overflow-x-hidden">
-                  {slots?.length > 0 ? (
-                    slots.map((slot) => (
-                      <AppointmentSlot
-                        key={slot} // Add a  key to avoid React warnings
-                        hour={slot}
-                        isSelected={state.selectedSlot === slot}
-                        onSelect={() => handleSelect(slot)}
-                      />
-                    ))
-                  ) : (
-                    <p className="text-sm text-center text-[#4E666A]">
-                      No available slots. Please adjust the filters.
-                    </p>
-                  )}
+                  {slots.map((slot) => (
+                    <AppointmentSlot
+                      key={slot}
+                      hour={slot}
+                      isSelected={state.selectedSlot === slot}
+                      onSelect={() => handleSelect(slot)}
+                    />
+                  ))}
                 </div>
               </div>
             </>
@@ -421,20 +387,16 @@ export const MakeAppointment = () => {
           )}
         </div>
       )}
-      {filtersPopulated && (
+
+      {selectedProvider && (
         <Button
           variant="callToAction"
           className="w-72 h-12 rounded-2xl self-center mt-72"
-          onClick={() => handleButtonClick()}
+          onClick={handleButtonClick}
         >
           {state.isSecondStep ? 'Book appointment' : 'Next step'}
         </Button>
       )}
-
-      {/* <button className="w-72 self-center relative overflow-hidden text-white font-bold shadow-lg px-6 py-3 rounded-lg transition-transform transform hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#1864AB] bg-gradient-to-r from-blue-500 to-blue-600">
-        <span className="relative z-10">Continue as guest</span>
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-blue-500 opacity-50 rounded-lg transition-transform duration-500 clip-path-wave"></div>
-      </button> */}
     </div>
   );
 };

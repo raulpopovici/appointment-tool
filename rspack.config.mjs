@@ -73,8 +73,7 @@ export default defineConfig({
     new ModuleFederationPlugin({
       name: 'hostApp', // Name of the host app
       remotes: {
-        headerBarApp:
-          'headerBarApp@https://appointment-tool-header.vercel.app/headerBarRemote.js',
+        headerBarApp: 'headerBarApp@http://localhost:3001/headerBarRemote.js',
       },
 
       shared: {
