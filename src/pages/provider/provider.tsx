@@ -1,5 +1,3 @@
-import image1 from '../../assets/photoTest.png';
-import salon1 from '../../assets/salon1.jpeg';
 import { useUser } from '../../hooks/useUser';
 import { mockData } from '../../mocks/mocks';
 import { StarRating } from '../../components/ui/starRating';
@@ -14,6 +12,8 @@ import {
   AvatarFallback,
   AvatarImage,
 } from '../../components/ui/avatar';
+import { ReviewComponent } from '../../components/reviews';
+import { OpenTimesComponent } from '../../components/openTimes';
 
 export const ProviderPage = () => {
   const {
@@ -128,37 +128,52 @@ export const ProviderPage = () => {
                   </Card>
                 ))}
               </div>
+              <Button variant="outline" className="w-[100px] self-center">
+                See all
+              </Button>
             </div>
-            <div>
+
+            <div className="flex flex-col space-y-4 w-full">
               <span className="text-3xl font-bold ">About</span>
+              <span>{selectedProvider?.about}</span>
+            </div>
+            <div className="flex flex-col space-y-4 w-full">
+              <span className="text-3xl font-bold ">Reviews</span>
+              <ReviewComponent />
+              <Button variant="outline" className="w-[100px] self-center">
+                See all
+              </Button>
             </div>
           </div>
-          <div className="flex pt-12 pl-8 flex-col space-y-4 w-full">
-            <span className="text-3xl font-bold">Team</span>
-            <div className="flex flex-wrap gap-3">
-              <div className="flex flex-col items-center gap-2">
-                <Avatar className="h-[80px] w-[80px]">
-                  <AvatarImage src="" />
-                  <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
-                <span className="text-sm font-semibold">Cindy</span>
-              </div>
+          <div className="flex pt-12 pl-8 flex-col space-y-20 w-full">
+            <div className="flex flex-col space-y-4 w-full">
+              <span className="text-3xl font-bold">Team</span>
+              <div className="flex flex-wrap gap-3">
+                <div className="flex flex-col items-center gap-2">
+                  <Avatar className="h-[80px] w-[80px]">
+                    <AvatarImage src="" />
+                    <AvatarFallback>CN</AvatarFallback>
+                  </Avatar>
+                  <span className="text-sm font-semibold">Cindy</span>
+                </div>
 
-              <div className="flex flex-col items-center gap-2">
-                <Avatar className="h-[80px] w-[80px]">
-                  <AvatarImage src="" />
-                  <AvatarFallback>JD</AvatarFallback>
-                </Avatar>
-                <span className="text-sm font-semibold">John</span>
-              </div>
-              <div className="flex flex-col items-center gap-2">
-                <Avatar className="h-[80px] w-[80px]">
-                  <AvatarImage src="" />
-                  <AvatarFallback>AD</AvatarFallback>
-                </Avatar>
-                <span className="text-sm font-semibold">Alice</span>
+                <div className="flex flex-col items-center gap-2">
+                  <Avatar className="h-[80px] w-[80px]">
+                    <AvatarImage src="" />
+                    <AvatarFallback>JD</AvatarFallback>
+                  </Avatar>
+                  <span className="text-sm font-semibold">John</span>
+                </div>
+                <div className="flex flex-col items-center gap-2">
+                  <Avatar className="h-[80px] w-[80px]">
+                    <AvatarImage src="" />
+                    <AvatarFallback>AD</AvatarFallback>
+                  </Avatar>
+                  <span className="text-sm font-semibold">Alice</span>
+                </div>
               </div>
             </div>
+            <OpenTimesComponent />
           </div>
         </div>
       </div>

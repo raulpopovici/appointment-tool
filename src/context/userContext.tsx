@@ -39,6 +39,7 @@ export type Provider = {
   rating: number;
   numberOfRatings: number;
   services: Service[];
+  about: string;
 };
 
 export const UserContext = createContext<UserContextType | undefined>(
