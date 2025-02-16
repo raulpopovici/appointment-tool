@@ -37,6 +37,7 @@ export type Provider = {
   location: string;
   contact: string;
   rating: number;
+  numberOfRatings: number;
   services: Service[];
 };
 

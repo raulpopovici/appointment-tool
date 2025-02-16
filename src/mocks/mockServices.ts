@@ -1,0 +1,138 @@
+export const mockServices = [
+  {
+    id: '1',
+    category: 'Hair',
+    services: [
+      {
+        id: '101',
+        type: 'Haircut',
+        time: '30 min',
+        price: '$20',
+        provider: 'Salon A',
+      },
+      {
+        id: '102',
+        type: 'Hair Coloring',
+        time: '1 hr 30 min',
+        price: '$50',
+        provider: 'Salon B',
+      },
+      {
+        id: '103',
+        type: 'Hair Styling',
+        time: '45 min',
+        price: '$35',
+        provider: 'Glam Studio',
+      },
+      {
+        id: '104',
+        type: 'Beard Trim',
+        time: '20 min',
+        price: '$15',
+        provider: 'Barber Bros',
+      },
+    ],
+  },
+  {
+    id: '2',
+    category: 'Nails',
+    services: [
+      {
+        id: '201',
+        type: 'Manicure',
+        time: '45 min',
+        price: '$25',
+        provider: 'Salon C',
+      },
+      {
+        id: '202',
+        type: 'Pedicure',
+        time: '1 hr',
+        price: '$30',
+        provider: "Jack's Saloon",
+      },
+      {
+        id: '203',
+        type: 'Gel Nails',
+        time: '1 hr 15 min',
+        price: '$40',
+        provider: 'Nail Heaven',
+      },
+      {
+        id: '204',
+        type: 'Acrylic Nails',
+        time: '1 hr 30 min',
+        price: '$50',
+        provider: 'Luxury Nails',
+      },
+    ],
+  },
+  {
+    id: '3',
+    category: 'Mechanics',
+    services: [
+      {
+        id: '301',
+        type: 'Oil Change',
+        time: '45 min',
+        price: '$40',
+        provider: 'Speedy Auto Shop',
+      },
+      {
+        id: '302',
+        type: 'Tire Replacement',
+        time: '1 hr',
+        price: '$80',
+        provider: 'Auto Care Center',
+      },
+      {
+        id: '303',
+        type: 'Brake Inspection',
+        time: '45 min',
+        price: '$60',
+        provider: 'Top Gear Mechanics',
+      },
+      {
+        id: '304',
+        type: 'Battery Replacement',
+        time: '30 min',
+        price: '$70',
+        provider: 'Quick Fix Garage',
+      },
+    ],
+  },
+  {
+    id: '4',
+    category: 'Dentists',
+    services: [
+      {
+        id: '401',
+        type: 'Teeth Cleaning',
+        time: '1 hr',
+        price: '$90',
+        provider: 'Bright Smile Dental',
+      },
+      {
+        id: '402',
+        type: 'Cavity Filling',
+        time: '45 min',
+        price: '$120',
+        provider: 'Healthy Teeth Clinic',
+      },
+      {
+        id: '403',
+        type: 'Teeth Whitening',
+        time: '1 hr 30 min',
+        price: '$150',
+        provider: 'Shiny Dental Care',
+      },
+      {
+        id: '404',
+        type: 'Root Canal',
+        time: '2 hrs',
+        price: '$300',
+        provider: 'Premier Dental Studio',
+      },
+    ],
+  },
+];

@@ -67,13 +67,18 @@ export default defineConfig({
           'postcss-loader',
         ],
       },
+      {
+        test: /\.(png|jpe?g|gif)$/i,
+        type: 'asset/resource',
+      },
     ],
   },
   plugins: [
     new ModuleFederationPlugin({
       name: 'hostApp', // Name of the host app
       remotes: {
-        headerBarApp: 'headerBarApp@http://localhost:3001/headerBarRemote.js',
+        headerBarApp:
+          'headerBarApp@http://appointment-tool-header.vercel.app/headerBarRemote.js',
       },
 
       shared: {

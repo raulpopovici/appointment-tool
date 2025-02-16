@@ -1,20 +1,22 @@
+import { number } from 'zod';
+
 export const mockData = {
   categories: [
     {
       id: 'c1',
-      name: 'Hair Services',
+      name: 'Hair',
     },
     {
       id: 'c2',
-      name: 'Nail Services',
+      name: 'Nail',
     },
     {
       id: 'c3',
-      name: 'Dental Care',
+      name: 'Dental',
     },
     {
       id: 'c4',
-      name: 'Automotive Services',
+      name: 'Automotive',
     },
   ],
   providers: [
@@ -24,6 +26,7 @@ export const mockData = {
       location: 'Downtown',
       rating: 4.7,
       contact: '123-456-7890',
+      numberOfRatings: 100,
       services: [
         {
           id: 's1',
@@ -54,6 +57,7 @@ export const mockData = {
       location: 'Medical Plaza',
       rating: 4.9,
       contact: '555-987-6543',
+      numberOfRatings: 100,
       services: [
         {
           id: 's4',
@@ -77,6 +81,7 @@ export const mockData = {
       location: 'Highway 12',
       rating: 4.5,
       contact: '555-432-1098',
+      numberOfRatings: 100,
       services: [
         {
           id: 's6',

@@ -6,6 +6,7 @@ import { BecomeProvider } from '../pages/becomeProvider/becomeProvider';
 import { MakeAppointment } from '../pages/makeAppointment/makeAppointment';
 import { Services } from '../pages/services/services';
 import LoginRegister from '../pages/login/loginRegister';
+import { ProviderPage } from '../pages/provider/provider';
 
 // Define routes as an array of RouteObject
 const routes: RouteObject[] = [
@@ -17,6 +18,7 @@ const routes: RouteObject[] = [
       { path: 'services', element: <Services /> },
       { path: 'make-an-appointment', element: <MakeAppointment /> },
       { path: 'become-a-provider', element: <BecomeProvider /> },
+      { path: 'provider', element: <ProviderPage /> },
       { path: '*', element: <div>page not found</div> }, // Catch-all for 404, //TODO
     ],
   },

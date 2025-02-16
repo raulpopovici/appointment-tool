@@ -3,12 +3,24 @@ import { Button } from '../../components/ui/button';
 import { useUser } from '../../hooks/useUser';
 import { useNavigate } from 'react-router-dom';
 import { mockData } from '../../mocks/mocks'; // Encapsulated JSON
+import { Provider, Category, Service } from '../../context/userContext';
 
 export const Services = () => {
-  const { setSelectedProvider } = useUser();
+  const { setSelectedProvider, setSelectedCategory, setSelectedService } =
+    useUser();
   const navigate = useNavigate();
 
   const { categories, providers } = mockData; // Extract categories & providers
+
+  const handleSelect = (
+    provider: Provider,
+    category: Category,
+    service: Service,
+  ) => {
+    setSelectedProvider(provider);
+    setSelectedCategory(category);
+    setSelectedService(service);
+  };
 
   return (
     <div className="grow h-full w-full p-24 pt-[80px] flex items-center flex-col space-y-8 text-[#144066]">
@@ -31,7 +43,7 @@ export const Services = () => {
                         key={`${provider.id}-${service.id}`}
                         className="p-4 flex items-center justify-between w-full shadow-none bg-white transition transform hover:scale-[1.02] cursor-pointer"
                         onClick={() => {
-                          setSelectedProvider(provider.id);
+                          handleSelect(provider, category, service);
                           navigate('/provider');
                         }}
                       >
@@ -63,12 +75,31 @@ export const Services = () => {
 
                         {/* Right Section - Provider Info & Book Button */}
                         <div className="flex flex-col items-end space-y-2">
-                          <span className="text-gray-600 text-sm">
-                            {provider.name} ⭐ {provider.rating}
+                          <span className="text-gray-600 text-sm flex flex-row items-center">
+                            {provider.name}{' '}
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="#FFD700"
+                              viewBox="0 0 24 24"
+                              stroke-width="1.5"
+                              className="size-4 ml-1 mr-1"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"
+                              />
+                            </svg>
+                            {provider.rating}
                           </span>
                           <Button
                             variant="callToAction"
                             className="bg-[#144066] hover:bg-[#144066]/90"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleSelect(provider, category, service);
+                              navigate('/make-an-appointment');
+                            }}
                           >
                             Book Now
                           </Button>
