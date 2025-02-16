@@ -78,7 +78,7 @@ export default defineConfig({
       name: 'hostApp', // Name of the host app
       remotes: {
         headerBarApp:
-          'headerBarApp@http://appointment-tool-header.vercel.app/headerBarRemote.js',
+          'headerBarApp@https://appointment-tool-header.vercel.app/headerBarRemote.js',
       },
 
       shared: {
